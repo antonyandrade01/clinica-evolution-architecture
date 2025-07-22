@@ -1,127 +1,78 @@
-# 🏥 Clínica Evolution - Sistema de Gestão para Clínicas
+<div align="center">
+  <a href="README-pt.md">Leia este documento em Português 🇧🇷</a>
+</div>
 
-![Banner do Projeto](docs/images/banner1.png)
+# 🏥 Clínica Evolution - System Architecture
 
-**Solução completa para gerenciamento de clínicas** com agendamento inteligente, prontuário eletrônico integrado e comunicação em tempo real. Este é o repositório central para o desenvolvimento e manutenção do sistema.
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Maintained-green?style=for-the-badge" alt="Status"/>
+  <img src="https://img.shields.io/badge/Type-Portfolio_Project-blue?style=for-the-badge" alt="Type"/>
+  <img src="https://img.shields.io/badge/Architecture-Dockerized-blueviolet?style=for-the-badge" alt="Architecture"/>
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue) ![Flask](https://img.shields.io/badge/Flask-2.0%2B-green) ![Docker](https://img.shields.io/badge/Docker-✓-blue)
+This repository contains the architectural documentation and local deployment configuration for 'Clínica Evolution', a full-stack, containerized web application for clinic management.
 
-## ✨ Funcionalidades Principais
-
-*   **📅 Agenda Inteligente:** Visualização em calendário (mês/semana/dia) ou lista, cores por status, edição em tempo real e filtros avançados.
-*   **👥 Gestão de Usuários Multiperfil:** 4 níveis de acesso (Admin, Recepcionista, Profissional, Paciente) com autenticação segura (CPF/E-mail) e proteção CAPTCHA.
-*   **📄 Prontuário Eletrônico (PEP):** Editor de documentos **ONLYOFFICE** integrado para DOCX/XLSX, com controle de versões e organização por pastas.
-*   **🔔 Comunicação em Tempo Real:** Notificações instantâneas via WebSockets (Socket.IO) sobre eventos importantes na plataforma.
+**Note:** This repository contains **only the architecture and configuration files**. The application's source code is in a private repository. The purpose of this project is to demonstrate system design and local deployment skills using Docker.
 
 ---
 
-## 🚀 Guia de Início Rápido (Ambiente de Desenvolvimento)
+## ✨ Key Features of the Application
 
-O ambiente é 100% containerizado com Docker, garantindo uma instalação rápida e consistente.
+*   **📅 Smart Scheduling:** Calendar view (month/week/day) and list view, real-time editing, and advanced filters.
+*   **👥 Multi-Profile User Management:** Four access levels (Admin, Receptionist, Professional, Patient) with secure authentication.
+*   **📄 Electronic Health Record (EHR):** Integrated **ONLYOFFICE Docs** editor for DOCX/XLSX, with version control.
+*   **🔔 Real-Time Communication:** Instant notifications via WebSockets (Socket.IO).
 
-**1. Clone o Repositório:**
+---
+
+## 🛠️ Architecture & Tech Stack
+
+This project is designed as a multi-service containerized application, orchestrated with Docker Compose.
+
+#### Container Architecture Diagram
+*The following diagram illustrates the services and their interactions within the Docker network.*
+<p align="center">
+  <img src="URL_DA_SUA_ARQUITETURA_DOCKER" alt="Docker Architecture Diagram" width="80%">
+</p>
+
+| Layer          | Technologies                                                                 |
+|----------------|------------------------------------------------------------------------------|
+| **Backend**    | Python 3, Flask, SQLAlchemy, Flask-SocketIO, Gunicorn                        |
+| **Frontend**   | Bootstrap 5, JavaScript, FullCalendar.js, SweetAlert2                        |
+| **Database**   | MariaDB                                                                      |
+| **Infrastructure** | Docker, Docker Compose                                                     |
+| **Integrations** | ONLYOFFICE Docs, Redis, RabbitMQ, Adminer                                  |
+
+---
+
+## 🚀 Local Development Setup Guide
+
+The entire environment is 100% containerized, ensuring a quick and consistent setup.
+
+**1. Clone this repository:**
 ```bash
-git clone https://github.com/seu-usuario/clinica-evolution.git
-cd clinica-evolution
+git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
+cd clinica-evolution-architecture
 ```
 
-**2. Configure o Ambiente:**
-Copie o arquivo de exemplo e ajuste as variáveis se necessário (as senhas padrão já estão configuradas para facilitar).
+**2. Configure the Environment:**
+Copy the example environment file. The default values are pre-configured for local development.
 ```bash
 cp .env.example .env
-# nano .env # Opcional: edite as chaves se desejar
 ```
 
-**3. Inicie os Serviços:**
-Este comando irá construir, baixar e iniciar todos os containers necessários.
+**3. Launch the Services:**
+This command will build the necessary images and start all containers.
 ```bash
 docker-compose up -d --build
 ```
 
-**4. Carregue os Dados de Demonstração (Opcional):**
-Para popular o sistema com dados de teste, execute o comando abaixo para restaurar o backup padrão.
-```bash
-docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < backup.sql
-```
-
-**5. Acesse as Interfaces:**
-*   **Aplicação Principal:** 👉 **[http://localhost:5000](http://localhost:5000)**
-*   **Interface Gráfica do Banco (Adminer):** 👉 **[http://localhost:8082](http://localhost:8082)**
-*   **Servidor ONLYOFFICE:** 👉 [http://localhost:8081](http://localhost:8081)
-
 ---
+## 👤 Contact
 
-## 🔑 Credenciais de Acesso (Dados de Teste)
+Created by **Antony Andrade** - Let's connect!
 
-| Perfil        | E-mail                  | Senha      |
-|---------------|-------------------------|------------|
-| Administrador | `admin@clinica.com`     | `senha123` |
-| Recepcionista | `recepcao@clinica.com`  | `recep123` |
-| Profissional  | `maria@clinica.com`     | `maria123` |
-| Paciente      | `joao@exemplo.com`      | `joao123`  |
-
-Para acessar o banco de dados via **Adminer** (em http://localhost:8082):
-*   **Sistema:** `MariaDB`
-*   **Servidor:** `db_mysql`
-*   **Usuário:** `evolution`
-*   **Senha:** `#!Ev0_Lm90=4M4`
-*   **Banco de dados:** `clinica_evolution`
-
----
-
-## 🔧 Manutenção e Operações
-
-### Backup e Restauração do Banco de Dados
-
-- **Criar um Backup:**
-  ```bash
-  # Gera um arquivo de backup com a data atual no nome
-  docker exec clinica_mariadb_db mariadb-dump -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution > backup_$(date +%d-%m-%Y).sql
-  ```
-- **Restaurar um Backup:**
-  ```bash
-  docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < nome_do_arquivo_backup.sql
-  ```
-> **⚠️ Importante:** É fundamental automatizar uma rotina de backups diários quando o sistema estiver em produção.
-
-### Migrações de Banco de Dados (Flask-Migrate)
-Quando a estrutura das tabelas (`models.py`) é alterada:
-
-1.  **Gerar Script de Migração:**
-    ```bash
-    docker-compose exec flask_app flask db migrate -m "Descrição da alteração"
-    ```
-2.  **Aplicar Migração:**
-    ```bash
-    docker-compose exec flask_app flask db upgrade
-    ```
-> **Atenção:** Sempre faça um backup do banco de dados antes de aplicar uma migração em produção.
-
-### Comandos Úteis do Docker
-| Ação                       | Comando                                      |
-|----------------------------|----------------------------------------------|
-| **Parar todos os serviços**| `docker-compose down`                        |
-| **Ver logs da aplicação**  | `docker-compose logs -f flask_app`           |
-| **Reiniciar a aplicação**  | `docker-compose restart flask_app`           |
-| **Atualizar e recriar**    | `docker-compose up -d --build`               |
-
----
-
-## 🛠️ Arquitetura e Tecnologias
-
-| Camada         | Tecnologias                                                                 |
-|----------------|-----------------------------------------------------------------------------|
-| **Backend**    | Python 3, Flask, SQLAlchemy, Flask-SocketIO, Flask-Login                    |
-| **Frontend**   | Bootstrap 5, JavaScript, FullCalendar.js, SweetAlert2, Socket.IO Client     |
-| **Banco**      | MariaDB                                                                     |
-| **Infra**      | Docker, Docker Compose, Gunicorn                                            |
-| **Integração** | ONLYOFFICE Docs, Redis, RabbitMQ, Adminer                                   |
-
-### Diagrama da Arquitetura de Containers
-![Diagrama da Arquitetura do Sistema](docs/images/arquitetura.png)
-
-> **Nota:** O Nginx é recomendado para o ambiente de produção como um proxy reverso para centralizar o acesso e gerenciar certificados SSL. No ambiente de desenvolvimento atual, o acesso é direto às portas expostas.
-
----
-> **Clínica Evolution** - Modernizando a gestão de saúde através da tecnologia ✨  
-> Desenvolvido com ❤️ por Antony Andrade
+<p>
+  <a href="https://github.com/antonyandrade01" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+  <a href="https://www.linkedin.com/in/antony-andrade-a04b92b7/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+</p>
