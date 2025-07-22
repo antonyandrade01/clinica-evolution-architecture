@@ -12,7 +12,10 @@
   <img src="https://img.shields.io/badge/Docker-Ready-blue?style=for-the-badge&logo=docker" alt="Docker"/>
 </p>
 
-**Solução completa para gerenciamento de clínicas** com agendamento inteligente, prontuário eletrônico integrado e comunicação em tempo real. Este repositório contém a documentação da arquitetura e a configuração para o ambiente de desenvolvimento.
+**Solução completa para gerenciamento de clínicas** com agendamento inteligente, prontuário eletrônico integrado e comunicação em tempo real. 
+
+
+**Note:** Este repositório contém **a documentação da arquitetura e a configuração para o ambiente de desenvolvimento.** O código da aplicação está em um repositório privado. O objetivo deste projeto é demonstrar o design do sistema e habilidades de deploy com docker.
 
 ## ✨ Funcionalidades Principais
 
@@ -28,26 +31,30 @@
 O ambiente é 100% containerizado com Docker, garantindo uma instalação rápida e consistente.
 
 **1. Clone o Repositório:**
-```bash
+```
+bash
 git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
 cd clinica-evolution-architecture
 ```
 
 **2. Configure o Ambiente:**
 Copie o arquivo de exemplo. As senhas padrão já estão configuradas para facilitar.
-```bash
+```
+bash
 cp .env.example .env
 ```
 
 **3. Inicie os Serviços:**
 Este comando irá construir, baixar e iniciar todos os containers necessários.
-```bash
+```
+bash
 docker-compose up -d --build
 ```
 
 **4. Carregue os Dados de Demonstração (Opcional):**
 Para popular o sistema com dados de teste, execute o comando abaixo para restaurar o backup padrão.
-```bash
+```
+bash
 docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < backup.sql
 ```
 
@@ -74,11 +81,13 @@ docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinic
 ### Backup e Restauração do Banco de Dados
 
 - **Criar um Backup:**
-  ```bash
+  ```
+  bash
   docker exec clinica_mariadb_db mariadb-dump -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution > backup_$(date +%d-%m-%Y).sql
   ```
 - **Restaurar um Backup:**
-  ```bash
+  ```
+  bash
   docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < nome_do_arquivo_backup.sql
   ```
 
@@ -95,7 +104,7 @@ docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinic
 
 #### Diagrama da Arquitetura de Containers
 <p align="center">
-  <img src="https://github.com/antonyandrade01/clinica-evolution-architecture/blob/main/docs/images/arquitetura.png?raw=true" alt="Docker Architecture Diagram" width="80%">
+  <img src="https://github.com/antonyandrade01/clinica-evolution-architecture/blob/main/docs/images/arquitetura.png?raw=true" alt="Diagrama da Arquitetura de Containers" width="80%">
 </p>
 
 | Camada         | Tecnologias                                                                 |
@@ -107,5 +116,11 @@ docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinic
 | **Integrations** | ONLYOFFICE Docs, Redis, RabbitMQ, Adminer                                  |
 
 ---
-> **Clínica Evolution** - Modernizando a gestão de saúde através da tecnologia ✨  
-> Desenvolvido com ❤️ por Antony Andrade
+## 👤 Contato
+
+Criado por **Antony Andrade** - Vamos nos conectar!
+
+<p>
+  <a href="https://github.com/antonyandrade01" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+  <a href="https://www.linkedin.com/in/antony-andrade-a04b92b7/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+</p>
