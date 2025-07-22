@@ -32,7 +32,7 @@ This project is designed as a multi-service containerized application, orchestra
 #### Container Architecture Diagram
 *The following diagram illustrates the services and their interactions within the Docker network.*
 <p align="center">
-  <img src="https://github.com/antonyandrade01/clinica-evolution-architecture/blob/main/docs/images/arquitetura.png" alt="Docker Architecture Diagram" width="80%">
+  <img src="https://github.com/antonyandrade01/clinica-evolution-architecture/blob/main/docs/images/arquitetura.png?raw=true" alt="Docker Architecture Diagram" width="80%">
 </p>
 
 | Layer          | Technologies                                                                 |
@@ -52,8 +52,7 @@ The entire environment is 100% containerized, ensuring a quick and consistent se
 **1. Clone this repository:**
 ```bash
 git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
-cd clinica-evolution-architecture
-```
+cd clinica-evolution-architecture```
 
 **2. Configure the Environment:**
 Copy the example environment file. The default values are pre-configured for local development.
