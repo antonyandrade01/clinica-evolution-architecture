@@ -32,7 +32,7 @@ This project is designed as a multi-service containerized application, orchestra
 #### Container Architecture Diagram
 *The following diagram illustrates the services and their interactions within the Docker network.*
 <p align="center">
-  <img src="URL_DA_SUA_ARQUITETURA_DOCKER" alt="Docker Architecture Diagram" width="80%">
+  <img src="https://github.com/antonyandrade01/clinica-evolution-architecture/blob/main/docs/images/arquitetura.png" alt="Docker Architecture Diagram" width="80%">
 </p>
 
 | Layer          | Technologies                                                                 |
