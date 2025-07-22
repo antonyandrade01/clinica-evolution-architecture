@@ -54,6 +54,7 @@ The entire environment is 100% containerized, ensuring a quick and consistent se
 git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
 cd clinica-evolution-architecture```
 
+
 **2. Configure the Environment:**
 Copy the example environment file. The default values are pre-configured for local development.
 ```bash
