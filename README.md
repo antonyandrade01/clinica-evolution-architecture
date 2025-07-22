@@ -32,25 +32,30 @@ A complete solution for clinic management, featuring smart scheduling, an integr
 The environment is 100% containerized with Docker, ensuring a quick and consistent setup.
 
 **1. Clone the Repository:**
-```bash
+```
+bash
 git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
 cd clinica-evolution-architecture
 ```
 
 **2. Configure the Environment:**
 Copy the example file. The default passwords are pre-configured for convenience.
-```bash
+```
+bash
 cp .env.example .env
 ```
 
 **3. Launch the Services:**
 This command will build, download, and start all necessary containers.
-```bash
+```
+bash
 docker-compose up -d --build
 ```
 
 **4. Load Demo Data (Optional):**
-To populate the system with test data, run the command below to restore the default backup.```bash
+To populate the system with test data, run the command below to restore the default backup.
+```
+bash
 docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < backup.sql
 ```
 
@@ -77,14 +82,15 @@ docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinic
 ### Database Backup and Restore
 
 - **Create a Backup:**
-  ```bash
+  ```
+  bash
   docker exec clinica_mariadb_db mariadb-dump -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution > backup_$(date +%d-%m-%Y).sql
   ```
 - **Restore from a Backup:**
-  ```bash
+  ```
+  bash
   docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinica_evolution < backup_filename.sql
   ```
-> **⚠️ Important:** It is crucial to automate a daily backup routine when the system is in production.
 
 ### Useful Docker Commands
 | Action                     | Command                                      |
