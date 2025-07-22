@@ -50,20 +50,24 @@ This project is designed as a multi-service containerized application, orchestra
 The entire environment is 100% containerized, ensuring a quick and consistent setup.
 
 **1. Clone this repository:**
-```bash
+```
+bash
 git clone https://github.com/antonyandrade01/clinica-evolution-architecture.git
-cd clinica-evolution-architecture```
+cd clinica-evolution-architecture
+```
 
 
 **2. Configure the Environment:**
 Copy the example environment file. The default values are pre-configured for local development.
-```bash
+```
+bash
 cp .env.example .env
 ```
 
 **3. Launch the Services:**
 This command will build the necessary images and start all containers.
-```bash
+```
+bash
 docker-compose up -d --build
 ```
 
