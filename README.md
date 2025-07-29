@@ -117,6 +117,72 @@ docker exec -i clinica_mariadb_db mariadb -u evolution -p'#!Ev0_Lm90=4M4' clinic
 | **Integrations** | ONLYOFFICE Docs, Redis, RabbitMQ, Adminer                                  |
 
 ---
+### DevOps Optimizations and Patterns Implemented
+
+Beyond the basic architecture, this project incorporates professional DevOps patterns to ensure security, efficiency, and automation:
+
+*   **🚀 Optimized Images with Multi-Stage Builds:** The Flask application's Docker image is built using a multi-stage process. This separates build-time dependencies from runtime, resulting in a significantly smaller final image.
+
+*   **🛡️ Enhanced Security with Non-Root User:** The containerized application runs under a dedicated user (`appuser`) instead of as `root`. This is a security best practice to mitigate risks in case of a vulnerability.
+
+*   **⚙️ Automated Backups with Ofelia:** A dedicated service (`Ofelia`) has been added to orchestrate automated, scheduled backups of the database and data volumes, using `rclone` to push archives to cloud storage (Google Drive), including a smart retention policy.
+
+*   **▶️ Robust Initialization with Entrypoint:** An `entrypoint.sh` script ensures that essential tasks, such as applying database migrations (`flask db upgrade`) and fixing volume permissions, are executed before the main application starts, preventing errors and ensuring environment consistency.
+<details>
+  <summary>Clique para ver o Dockerfile.flask otimizado</summary>
+
+  ```dockerfile
+# --- Estágio de Build ---
+FROM python:3.13.5-alpine3.22 AS builder
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Instala dependências do sistema
+RUN apk add --no-cache gcc musl-dev linux-headers
+
+# Ambiente virtual para isolar as dependências da aplicação
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Instala as dependências no ambiente virtual
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia o restante do código da aplicação
+COPY . .
+
+# --- Estágio de Runtime ---
+FROM python:3.13.5-alpine3.22 AS runtime
+
+# Cria um usuário não-root e um grupo
+RUN apk add --no-cache su-exec curl && \
+    addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+
+# Define o diretório de trabalho
+WORKDIR /app
+COPY --from=builder /opt/venv /opt/venv
+
+# Copia o código da aplicação do estágio de build
+COPY --from=builder --chown=appuser:appgroup /app /app
+
+# Copia o script de entrypoint para dentro da imagem
+COPY ./docker/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
+# Define as variáveis de ambiente para usar o ambiente virtual
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--workers", "2", "--worker-class", "eventlet", "--bind", "0.0.0.0:5000", "app:app"]
+```
+</details>
+
+---
 ## 👤 Contact
 
 Created by **Antony Andrade** - Let's connect!
