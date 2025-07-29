@@ -129,50 +129,50 @@ Beyond the basic architecture, this project incorporates professional DevOps pat
 
 *   **▶️ Robust Initialization with Entrypoint:** An `entrypoint.sh` script ensures that essential tasks, such as applying database migrations (`flask db upgrade`) and fixing volume permissions, are executed before the main application starts, preventing errors and ensuring environment consistency.
 <details>
-  <summary>Clique para ver o Dockerfile.flask otimizado</summary>
+  <summary>Click to view the optimized Dockerfile.flask</summary>
 
   ```dockerfile
-# --- Estágio de Build ---
+# --- Build Stage ---
 FROM python:3.13.5-alpine3.22 AS builder
 
-# Define o diretório de trabalho
+# Set the working directory
 WORKDIR /app
 
-# Instala dependências do sistema
+# Install system dependencies
 RUN apk add --no-cache gcc musl-dev linux-headers
 
-# Ambiente virtual para isolar as dependências da aplicação
+# Virtual environment to isolate application dependencies
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Instala as dependências no ambiente virtual
+# Install dependencies in the virtual environment
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o restante do código da aplicação
+# Copy the rest of the application code
 COPY . .
 
-# --- Estágio de Runtime ---
+# --- Runtime Stage ---
 FROM python:3.13.5-alpine3.22 AS runtime
 
-# Cria um usuário não-root e um grupo
+# Create a non-root user and group
 RUN apk add --no-cache su-exec curl && \
-    addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
+  addgroup -S appgroup && \
+  adduser -S appuser -G appgroup
 
-# Define o diretório de trabalho
+# Set the working directory
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 
-# Copia o código da aplicação do estágio de build
+# Copy the application code from the build stage
 COPY --from=builder --chown=appuser:appgroup /app /app
 
-# Copia o script de entrypoint para dentro da imagem
+# Copy the entrypoint script into the image
 COPY ./docker/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
-# Define as variáveis de ambiente para usar o ambiente virtual
+# Set environment variables to use the virtual environment
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 
