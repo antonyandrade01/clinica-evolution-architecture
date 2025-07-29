@@ -1,16 +1,21 @@
 # Arquivo: docker-compose.yml
 
 services:
-  # Serviço 1: Sua Aplicação Flask
+  # Aplicação Flask
   flask_app:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.flask 
+    image: clinica_app:${IMAGE_VERSION:-latest}
     container_name: clinica_flask_app
+    restart: always
+    environment:
+      TZ: ${TZ}
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
       - uploads_data:/app/static/img/uploads
-      - ./storage:/app/storage 
+      - storage_data:/app/storage 
     env_file:
       - .env
     depends_on:
@@ -18,44 +23,56 @@ services:
         condition: service_healthy 
       onlyoffice:
         condition: service_started
-
+    networks:
+      - clinica-net
+      
   # Serviço do Banco de Dados 
   db_mysql:
-    image: mariadb:11.4       
+    image: mariadb:11.8.2-ubi9
     container_name: clinica_mariadb_db
     restart: always
     environment:
-      # Use as mesmas credenciais do arquivo .env
+      # Usa as mesmas credenciais do arquivo .env
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} 
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3307:3306"
+      TZ: ${TZ}
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
     healthcheck:
       # Healthcheck do mysqladmin
       test: ["CMD-SHELL", "mariadb -u ${DB_USER} -p'${DB_PASSWORD}' -e 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-  
-  # Serviço de Cache - Redis
+    networks:
+      - clinica-net
+
+  # Serviço de Cache
   redis:
-    image: redis:7.2              #
+    image: redis:8.0.3-alpine3.21 
     container_name: onlyoffice_redis
     restart: always
+    networks:
+      - clinica-net
+    environment:
+      TZ: ${TZ}
 
-  # Serviço de Mensageria - RabbitMQ
+  # RabbitMQ
   rabbitmq:
-    image: rabbitmq:3.13-management
+    image: rabbitmq:4.1.2-management-alpine
     container_name: onlyoffice_rabbitmq
     restart: always
+    networks:
+      - clinica-net
+    environment:
+      TZ: ${TZ}
 
-  # Serviço 2: Servidor ONLYOFFICE
+  # Servidor ONLYOFFICE
   onlyoffice:
-    image: onlyoffice/documentserver:9.0
+    image: onlyoffice/documentserver:9.0.3.1
     container_name: onlyoffice_server
     ports:
       - "8081:80"
@@ -67,19 +84,73 @@ services:
       - REDIS_SERVER_HOST=redis
       - AMQP_URI=amqp://guest:guest@rabbitmq
       - JWT_SECRET=${ONLYOFFICE_JWT_SECRET}
-      - JWT_ENABLED=true
+      - JWT_ENABLED="true"
       - JWT_HEADER=Authorization
-      - ONLYOFFICE_VERIFY_PEER_OFF=true
+      - ONLYOFFICE_VERIFY_PEER_OFF="true"
+      - TZ=${TZ}
+    networks:
+      - clinica-net
 
   # Interface Gráfica para o Banco de Dados
   adminer:
-    image: adminer
+    image: adminer:5.3.0-standalone
+    container_name: clinica_adminer
     restart: always
     ports:
-      - "8082:8080" # Mapeia a porta 8082 para a 8080 do container
+      - "8082:8080"
     depends_on:
-      - db_mysql
-      
-# Define volumes nomeados para persistir os arquivos
+      db_mysql:
+        condition: service_healthy 
+    networks:
+      - clinica-net
+    environment:
+      TZ: ${TZ}
+
+  # Serviço de Agendamento e Backup
+  ofelia:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ofelia 
+    image: clinica_scheduler:${IMAGE_VERSION:-latest}
+    container_name: clinica_scheduler
+    restart: always
+    entrypoint: >
+      sh -c "
+        echo 'Executando backup inicial...'
+        /usr/local/bin/backup.sh
+        echo 'Backup inicial concluído. Iniciando o agendador Ofelia...'
+        ofelia daemon --docker
+      "
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/config/rclone:/root/.config/rclone
+      - uploads_data:/data/uploads_data:ro
+      - storage_data:/data/storage_data:ro
+    networks:
+      - clinica-net
+    depends_on:
+      db_mysql:
+        condition: service_healthy 
+    labels:
+      ofelia.enabled: "true"
+
+      # BACKUP DE HORA EM HORA
+      ofelia.job-exec.backup-hourly.command: "bash /usr/local/bin/backup.sh"
+      ofelia.job-exec.backup-hourly.schedule: "@hourly"
+      ofelia.job-exec.backup-hourly.container: "clinica_scheduler"
+      ofelia.job-exec.backup-hourly.no-overlap: "true"
+    environment:
+      TZ: ${TZ}
+
+# Configuração de redes      
+networks:
+  clinica-net:
+    name: clinica-net
+    driver: bridge
+
+# Configuração de volumes
 volumes:
   uploads_data:
+  storage_data:
+  mariadb_data:
