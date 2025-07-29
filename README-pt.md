@@ -178,8 +178,8 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 5000
 
 CMD ["gunicorn", "--workers", "2", "--worker-class", "eventlet", "--bind", "0.0.0.0:5000", "app:app"]
-  </details>
 ```
+</details>
 ---
 ## 👤 Contato
 
