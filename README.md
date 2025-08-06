@@ -130,7 +130,7 @@ Beyond the basic architecture, this project incorporates professional DevOps pat
 
 *   **▶️ Robust Initialization with Entrypoint:** An `entrypoint.sh` script ensures that essential tasks, such as applying database migrations (`flask db upgrade`) and fixing volume permissions, are executed before the main application starts, preventing errors and ensuring environment consistency.
 
-*   **🔄 Integração Contínua com GitHub Actions:** Um pipeline de CI automatizado constrói e publica as imagens Docker, tanto do backend (Flask) quanto do frontend (Next.js), em paralelo a cada push na branch main. O processo utiliza o GitHub Secrets para uma autenticação segura com o Docker Hub e etiqueta cada imagem com a tag latest e o SHA do commit, garantindo versionamento e rastreabilidade.
+*   **🔄 Continuous Integration with GitHub Actions:** An automated CI pipeline builds and pushes the Docker images for both the backend (Flask) and frontend (Next.js) in parallel upon every push to the `main` branch. It utilizes GitHub Secrets for secure authentication with Docker Hub and tags images with both `latest` and the commit SHA for versioning and traceability.
 
         
 <details>
@@ -260,6 +260,7 @@ Created by **Antony Andrade** - Let's connect!
   <a href="https://github.com/antonyandrade01" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
   <a href="https://www.linkedin.com/in/antony-andrade-a04b92b7/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
 </p>
+
 
 
 
