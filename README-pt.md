@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python" alt="Python"/>
   <img src="https://img.shields.io/badge/Flask-2.0%2B-green?style=for-the-badge&logo=flask" alt="Flask"/>
   <img src="https://img.shields.io/badge/Docker-Ready-blue?style=for-the-badge&logo=docker" alt="Docker"/>
+  <img src="https://img.shields.io/badge/CI/CD-Implemented-green?style=for-the-badge" alt="CI/CD Implemented"/>
 </p>
 
 **Solução completa para gerenciamento de clínicas** com agendamento inteligente, prontuário eletrônico integrado e comunicação em tempo real. 
@@ -127,6 +128,73 @@ Além da arquitetura base, este projeto incorpora padrões profissionais de DevO
 *   **⚙️ Backups Automatizados com Ofelia:** Um serviço dedicado (`Ofelia`) foi adicionado para orquestrar backups automáticos e agendados da base de dados e dos volumes de dados, utilizando `rclone` para enviar os arquivos para um armazenamento em nuvem (Google Drive), incluindo uma política de retenção inteligente.
 
 *   **▶️ Inicialização Robusta com Entrypoint:** Um script de `entrypoint.sh` garante que tarefas essenciais, como a aplicação de migrações do banco de dados (`flask db upgrade`) e o ajuste de permissões de volumes, sejam executadas antes que a aplicação principal seja iniciada, evitando erros e garantindo a consistência do ambiente.
+
+*   **🔄 Continuous Integration with GitHub Actions:** An automated CI pipeline builds and pushes the Docker images for both the backend (Flask) and frontend (Next.js) in parallel upon every push to the `main` branch. It utilizes GitHub Secrets for secure authentication with Docker Hub and tags images with both `latest` and the commit SHA for versioning and traceability.
+
+        
+<details>
+  <summary>Click to view the <code>ci.yml</code> workflow</summary>
+
+  ```yaml
+  # .github/workflows/ci.yml
+  name: CI - Build e Push das Imagens Docker
+
+  on:
+    push:
+      branches: [ "main" ]
+    workflow_dispatch:
+
+  jobs:
+    build-and-push-backend:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout do repositório
+          uses: actions/checkout@v4
+
+        - name: Configurar Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Login no Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build e Push da imagem do Backend
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./docker/Dockerfile.flask
+            push: true
+            tags: antonyandrade/clinica-evolution-backend:latest, antonyandrade/clinica-evolution-backend:${{ github.sha }}
+
+    build-and-push-frontend:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout do repositório
+          uses: actions/checkout@v4
+
+        - name: Configurar Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Login no Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build e Push da imagem do Frontend
+          uses: docker/build-push-action@v5
+          with:
+            context: ./frontend
+            file: ./frontend/Dockerfile.frontend
+            push: true
+            tags: antonyandrade/clinica-evolution-frontend:latest, antonyandrade/clinica-evolution-frontend:${{ github.sha }}
+
+```
+
+</details>
+
 <details>
   <summary>Clique para ver o Dockerfile.flask otimizado</summary>
 
