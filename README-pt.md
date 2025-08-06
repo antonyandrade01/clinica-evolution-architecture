@@ -129,8 +129,7 @@ Além da arquitetura base, este projeto incorpora padrões profissionais de DevO
 
 *   **▶️ Inicialização Robusta com Entrypoint:** Um script de `entrypoint.sh` garante que tarefas essenciais, como a aplicação de migrações do banco de dados (`flask db upgrade`) e o ajuste de permissões de volumes, sejam executadas antes que a aplicação principal seja iniciada, evitando erros e garantindo a consistência do ambiente.
 
-*   **🔄 Continuous Integration with GitHub Actions:** An automated CI pipeline builds and pushes the Docker images for both the backend (Flask) and frontend (Next.js) in parallel upon every push to the `main` branch. It utilizes GitHub Secrets for secure authentication with Docker Hub and tags images with both `latest` and the commit SHA for versioning and traceability.
-
+*   **🔄 Integração Contínua com GitHub Actions:** Um pipeline de CI automatizado constrói e publica as imagens Docker, tanto do backend (Flask) quanto do frontend (Next.js), em paralelo a cada push na branch main. O processo utiliza o GitHub Secrets para uma autenticação segura com o Docker Hub e etiqueta cada imagem com a tag latest e o SHA do commit, garantindo versionamento e rastreabilidade.
         
 <details>
   <summary>Click to view the <code>ci.yml</code> workflow</summary>
