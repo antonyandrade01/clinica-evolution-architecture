@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/Status-Maintained-green?style=for-the-badge" alt="Status"/>
   <img src="https://img.shields.io/badge/Type-Portfolio_Project-blue?style=for-the-badge" alt="Type"/>
   <img src="https://img.shields.io/badge/Architecture-Dockerized-blueviolet?style=for-the-badge" alt="Architecture"/>
+  <img src="https://img.shields.io/badge/CI/CD-Implemented-green?style=for-the-badge" alt="CI/CD Implemented"/>
 </p>
 
 A complete solution for clinic management, featuring smart scheduling, an integrated electronic health record, and real-time communication. This repository contains the architectural documentation and the configuration for the local development environment.
@@ -128,6 +129,74 @@ Beyond the basic architecture, this project incorporates professional DevOps pat
 *   **⚙️ Automated Backups with Ofelia:** A dedicated service (`Ofelia`) has been added to orchestrate automated, scheduled backups of the database and data volumes, using `rclone` to push archives to cloud storage (Google Drive), including a smart retention policy.
 
 *   **▶️ Robust Initialization with Entrypoint:** An `entrypoint.sh` script ensures that essential tasks, such as applying database migrations (`flask db upgrade`) and fixing volume permissions, are executed before the main application starts, preventing errors and ensuring environment consistency.
+
+*   **🔄 Continuous Integration with GitHub Actions:** An automated CI pipeline builds and pushes the Docker images for both the backend (Flask) and frontend (Next.js) in parallel upon every push to the `main` branch. It utilizes GitHub Secrets for secure authentication with Docker Hub and tags images with both `latest` and the commit SHA for versioning and traceability.
+
+        
+<details>
+  <summary>Click to view the <code>ci.yml</code> workflow</summary>
+
+  ```yaml
+  # .github/workflows/ci.yml
+  name: CI - Build e Push das Imagens Docker
+
+  on:
+    push:
+      branches: [ "main" ]
+    workflow_dispatch:
+
+  jobs:
+    build-and-push-backend:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout do repositório
+          uses: actions/checkout@v4
+
+        - name: Configurar Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Login no Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build e Push da imagem do Backend
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./docker/Dockerfile.flask
+            push: true
+            tags: antonyandrade/clinica-evolution-backend:latest, antonyandrade/clinica-evolution-backend:${{ github.sha }}
+
+    build-and-push-frontend:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout do repositório
+          uses: actions/checkout@v4
+
+        - name: Configurar Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Login no Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build e Push da imagem do Frontend
+          uses: docker/build-push-action@v5
+          with:
+            context: ./frontend
+            file: ./frontend/Dockerfile.frontend
+            push: true
+            tags: antonyandrade/clinica-evolution-frontend:latest, antonyandrade/clinica-evolution-frontend:${{ github.sha }}
+
+```
+
+</details>
+
+
 <details>
   <summary>Click to view the optimized Dockerfile.flask</summary>
 
@@ -191,3 +260,4 @@ Created by **Antony Andrade** - Let's connect!
   <a href="https://github.com/antonyandrade01" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
   <a href="https://www.linkedin.com/in/antony-andrade-a04b92b7/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
 </p>
+
