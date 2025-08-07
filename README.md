@@ -132,6 +132,10 @@ Beyond the basic architecture, this project incorporates professional DevOps pat
 
 *   **🔄 Continuous Integration with GitHub Actions:** An automated CI pipeline builds and pushes the Docker images for both the backend (Flask) and frontend (Next.js) in parallel upon every push to the `main` branch. It utilizes GitHub Secrets for secure authentication with Docker Hub and tags images with both `latest` and the commit SHA for versioning and traceability.
 
+*   **🤖 AI-Assisted Code Review with Gemini:** To accelerate the feedback loop and ensure high code quality, the project leverages Google's Gemini AI integrated via GitHub Actions. The automation operates on three fronts:
+    1.  **Pull Request Reviewer:** The AI analyzes each PR, posting comments and improvement suggestions directly on the code.
+    2.  **Push Analysis:** Every push to the `main` branch undergoes a security and quality scan, with a summary logged for auditing.
+    3.  **On-Demand Assistant:** Developers can invoke the AI in issues or comments (`@gemini-cli`) to ask for explanations, refactoring suggestions, or unit tests.
         
 <details>
   <summary>Click to view the <code>ci.yml</code> workflow</summary>
@@ -260,6 +264,7 @@ Created by **Antony Andrade** - Let's connect!
   <a href="https://github.com/antonyandrade01" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
   <a href="https://www.linkedin.com/in/antony-andrade-a04b92b7/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
 </p>
+
 
 
 
