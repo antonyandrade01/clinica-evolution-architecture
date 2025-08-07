@@ -130,7 +130,12 @@ Além da arquitetura base, este projeto incorpora padrões profissionais de DevO
 *   **▶️ Inicialização Robusta com Entrypoint:** Um script de `entrypoint.sh` garante que tarefas essenciais, como a aplicação de migrações do banco de dados (`flask db upgrade`) e o ajuste de permissões de volumes, sejam executadas antes que a aplicação principal seja iniciada, evitando erros e garantindo a consistência do ambiente.
 
 *   **🔄 Integração Contínua com GitHub Actions:** Um pipeline de CI automatizado constrói e publica as imagens Docker, tanto do backend (Flask) quanto do frontend (Next.js), em paralelo a cada push na branch main. O processo utiliza o GitHub Secrets para uma autenticação segura com o Docker Hub e etiqueta cada imagem com a tag latest e o SHA do commit, garantindo versionamento e rastreabilidade.
-        
+
+*   **🤖 Revisão de Código Assistida por IA com Gemini:** Para acelerar o ciclo de feedback e garantir a alta qualidade do código, o projeto utiliza a IA do Google Gemini integrada via GitHub Actions. A automação opera em três frentes:
+    1.  **Revisor de Pull Requests:** A IA analisa cada PR, postando comentários e sugestões de melhoria diretamente no código.
+    2.  **Análise de Pushes:** Cada push para a branch `main` passa por uma análise de segurança e qualidade, com o resumo registrado nos logs.
+    3.  **Assistente Sob Demanda:** Desenvolvedores podem chamar a IA em issues ou comentários (`@gemini-cli`) para pedir explicações, sugestões de refatoração ou testes.
+       
 <details>
   <summary>Click to view the <code>ci.yml</code> workflow</summary>
 
